@@ -9,6 +9,20 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+    id 'java'
+    id 'eclipse'
+}
+
+eclipse{
+    project {
+        // eclipse .project 파일에 등록할 프로젝트 이름
+        name = "myproject"
+    }
+}
+// 자바 소스를 컴파일 할 때 적용할 옵션
+tasks.withType(JavaCompile){
+    // $javac -encoding utf-8 ..
+    options.encoding = 'UTF-8'
 }
 
 repositories {

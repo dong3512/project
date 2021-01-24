@@ -39,4 +39,13 @@ public class MemberHandler {
           m.no, m.name, m.email, m.photo, m.hp, m.registeredDate);
     }
   }
+
+  public static boolean exist(String name) {
+    for (int i = 0; i < size; i++) {
+      if(name.equals(members[i].name)) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

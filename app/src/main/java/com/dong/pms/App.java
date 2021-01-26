@@ -1,5 +1,6 @@
 package com.dong.pms;
 
+import com.dong.pms.handler.BoardHandler;
 import com.dong.pms.handler.MemberHandler;
 import com.dong.pms.handler.ScheduleHandler;
 import com.dong.pms.handler.SeatHandler;
@@ -32,6 +33,12 @@ public class App {
             break;
           case "/seat/list":
             SeatHandler.list();
+            break;
+          case "/board/add":
+            BoardHandler.add();
+            break;
+          case "/board/list":
+            BoardHandler.list();
             break;
           case "quit":
           case "exit":

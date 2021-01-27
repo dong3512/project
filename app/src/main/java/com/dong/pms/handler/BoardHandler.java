@@ -35,7 +35,7 @@ public class BoardHandler {
       Board b = boards[i];
       // 번호, 제목, ,전하고싶은말, 등록일, 작성자, 
       System.out.printf("%d, %s, %s, %s, %s\n", 
-          b.no, b.title, b.message,b.registeredDate, b.writer, b.viewCount );
+          b.no, b.title, b.message,b.registeredDate, b.writer );
     }
   }
 }

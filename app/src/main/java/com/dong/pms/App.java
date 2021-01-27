@@ -12,32 +12,32 @@ public class App {
     loop:
       while(true) {
         System.out.println("명령어 = "
-            + "/member/add, /member/list, /schedule/add, /schedule/list, /seat/add, /seat/list");
+            + "1.회원입력, 2.회원목록, 3.비행일정입력, 4.비행목록, 5.좌석정보입력, 6.좌석정보목록, 7.직원게시판입력, 8.직원게시판 목록");
         String command = Prompt.inputString("명령> ");
 
         switch (command) {
-          case "/member/add":
+          case "1":
             MemberHandler.add();
             break;
-          case "/member/list":
+          case "2":
             MemberHandler.list();
             break;
-          case "/schedule/add":
+          case "3":
             ScheduleHandler.add();
             break;
-          case "/schedule/list":
+          case "4":
             ScheduleHandler.list();
             break;
-          case "/seat/add":
+          case "5":
             SeatHandler.add();
             break;
-          case "/seat/list":
+          case "6":
             SeatHandler.list();
             break;
-          case "/board/add":
+          case "7":
             BoardHandler.add();
             break;
-          case "/board/list":
+          case "8":
             BoardHandler.list();
             break;
           case "quit":

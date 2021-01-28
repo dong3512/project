@@ -8,7 +8,7 @@ import com.dong.util.Prompt;
 
 public class App {
   public static void main(String[] args) {
-
+    System.out.println("[항공사 회원관리프로그램]");
     loop:
       while(true) {
         System.out.println("명령어 = "

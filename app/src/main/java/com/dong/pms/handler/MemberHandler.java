@@ -17,6 +17,23 @@ public class MemberHandler {
   static Member[] members = new Member[LENGTH];
   static int size = 0;
 
+  public static void category() {
+    System.out.println("1. 회원등록");
+    System.out.println("2. 회원목록");
+    String cmd = Prompt.inputString("입력> ");
+    switch(cmd) {
+      case "1":
+        add();
+        break;
+
+      case "2":
+        list();
+        break;
+      default:
+        System.out.println("잘못된 명령입니다.");
+    }
+  }
+
   public static void add(){
     System.out.println("[회원 등록]");
 

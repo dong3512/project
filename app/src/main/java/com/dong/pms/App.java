@@ -11,35 +11,21 @@ public class App {
     System.out.println("[항공사 회원관리프로그램]");
     loop:
       while(true) {
-        System.out.println("명령어 = "
-            + "1.회원입력, 2.회원목록, 3.비행일정입력, 4.비행일정목록 ");
-        System.out.println("5.좌석정보입력, 6.좌석정보목록, 7.칭찬게시판입력, 8.칭찬게시판 목록");
+        System.out.println("1. 회원관리, 2. 비행일정관리, 3. 좌석관리, 4. 칭찬게시판 ");
         String command = Prompt.inputString("명령> ");
 
         switch (command) {
           case "1":
-            MemberHandler.add();
+            MemberHandler.category();
             break;
           case "2":
-            MemberHandler.list();
+            ScheduleHandler.category();
             break;
           case "3":
-            ScheduleHandler.add();
+            SeatHandler.category();
             break;
           case "4":
-            ScheduleHandler.list();
-            break;
-          case "5":
-            SeatHandler.add();
-            break;
-          case "6":
-            SeatHandler.list();
-            break;
-          case "7":
-            BoardHandler.add();
-            break;
-          case "8":
-            BoardHandler.list();
+            BoardHandler.category(boardList);
             break;
           case "quit":
           case "exit":

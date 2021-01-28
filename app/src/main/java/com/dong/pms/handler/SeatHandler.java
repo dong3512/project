@@ -15,6 +15,23 @@ public class SeatHandler {
   static Seat[] seats = new Seat[LENGTH];
   static int size = 0;
 
+  public static void category() {
+    System.out.println("1. 좌석등록");
+    System.out.println("2. 좌석목록");
+    String cmd = Prompt.inputString("입력> ");
+    switch(cmd) {
+      case "1":
+        add();
+        break;
+
+      case "2":
+        list();
+        break;
+      default:
+        System.out.println("잘못된 명령입니다.");
+    }
+  }
+
   public static void add(){
     System.out.println("[좌석 등록]");
 

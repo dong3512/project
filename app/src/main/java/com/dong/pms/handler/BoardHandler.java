@@ -11,7 +11,7 @@ public class BoardHandler {
   static int size = 0;
 
   public static void add(){
-    System.out.println("[게시글 등록]");
+    System.out.println("[칭찬게시글 등록]");
 
     Board b = new Board();
 
@@ -29,7 +29,7 @@ public class BoardHandler {
   }
 
   public static void list() {
-    System.out.println("[게시글 목록]");
+    System.out.println("[칭찬게시글 목록]");
 
     for (int i = 0; i < size; i++) {
       Board b = boards[i];

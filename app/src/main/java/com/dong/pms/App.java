@@ -12,7 +12,8 @@ public class App {
     loop:
       while(true) {
         System.out.println("명령어 = "
-            + "1.회원입력, 2.회원목록, 3.비행일정입력, 4.비행목록, 5.좌석정보입력, 6.좌석정보목록, 7.직원게시판입력, 8.직원게시판 목록");
+            + "1.회원입력, 2.회원목록, 3.비행일정입력, 4.비행일정목록 ");
+        System.out.println("5.좌석정보입력, 6.좌석정보목록, 7.칭찬게시판입력, 8.칭찬게시판 목록");
         String command = Prompt.inputString("명령> ");
 
         switch (command) {

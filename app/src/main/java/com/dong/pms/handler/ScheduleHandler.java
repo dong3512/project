@@ -1,6 +1,6 @@
 package com.dong.pms.handler;
 
-import java.sql.Date;
+import java.sql.Time;
 import com.dong.util.Prompt;
 
 public class ScheduleHandler {
@@ -10,8 +10,8 @@ public class ScheduleHandler {
     String destination ;
     String airno ;
     String name;
-    Date dtime ;
-    Date atime ;
+    Time dtime ;
+    Time atime ;
     String pilot;
   }
   static final int LENGTH = 100;
@@ -26,8 +26,8 @@ public class ScheduleHandler {
     s.no = Prompt.inputInt("회원번호: ");
     s.destination = Prompt.inputString("목적지: ");
     s.airno = Prompt.inputString("항공기번호: ");
-    s.dtime = Prompt.inputDate("출발일자: ");
-    s.atime = Prompt.inputDate("도착일자: ");
+    s.dtime = Prompt.inputTime("출발시간: ");
+    s.atime = Prompt.inputTime("도착시간: ");
     while(true) {
       String name = Prompt.inputString("탑승객: (취소: 빈문자열)");
       if(name.length() == 0) {

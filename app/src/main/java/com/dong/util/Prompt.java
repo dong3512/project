@@ -1,6 +1,6 @@
 package com.dong.util;
 
-import java.sql.Date;
+import java.sql.Time;
 import java.util.Scanner;
 
 public class Prompt {
@@ -16,9 +16,10 @@ public class Prompt {
     return Integer.parseInt(inputString (title));
   }
   //time 으로 하고 싶은데 하는 방법을 모르겠음.
-  public static Date inputDate(String title){
-    return Date.valueOf(inputString(title));
+  public static Time inputTime(String title){
+    return Time.valueOf(inputString(title));
   }
+
   public static void close(){
     keyboardScan.close();
   }

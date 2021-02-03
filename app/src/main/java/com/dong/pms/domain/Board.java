@@ -10,4 +10,5 @@ public class Board {
   public String message;
   public String writer;
   public Date registeredDate;
+  public int viewCount;
 }

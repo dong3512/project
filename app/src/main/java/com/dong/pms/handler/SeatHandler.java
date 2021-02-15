@@ -5,8 +5,8 @@ import com.dong.util.Prompt;
 
 public class SeatHandler {
 
-  Node first;
-  Node last;
+  static final int LENGTH = 100;
+  Seat[] seats = new Seat [LENGTH];
   int size = 0;
 
   public void category() {
@@ -49,30 +49,15 @@ public class SeatHandler {
     t.sno = Prompt.inputString("좌석번호: ");
     t.etc = Prompt.inputString("특이사항: ");
 
-    Node node = new Node(t);
-
-    if(last == null) {
-      last = node ;
-      first = node;
-    }else {
-      last.next = node;
-      node.prev = last;
-      last = node;
-    }
-
-    this.size ++;
-    System.out.println("좌석을 등록하였습니다.");
+    this.seats[this.size ++] = t;
   }
 
   public void list(){
     System.out.println("[좌석 목록]");
 
-    Node cursor = first;
-
-    while (cursor != null) {
-      Seat t = cursor.seat;
+    for (int i = 0; i < this.size; i++) {
+      Seat t = this.seats[i];
       System.out.printf("%s, %s, %s, %s, %s\n",t.no,t.mgrade,gradeLabel(t.sgrade),t.sno, t.etc);
-      cursor = cursor.next;
     }
   }
 
@@ -129,41 +114,19 @@ public class SeatHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    Seat seat = findByNo(no);
-
-    if (seat == null) {
-      System.out.println("해당 번호의 작업이 없습니다.");
+    int i = indexOf(no);
+    if (i == -1) {
+      System.out.println("해당 번호의 좌석이 없습니다.");
       return;
     }
 
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N)");
 
     if(input.equalsIgnoreCase("Y")) {
-      Node cursor = first;
-      while (cursor != null) {
-        if (cursor.seat == seat) {
-          this.size--;
-          if (first == last) {
-            first = last = null;
-            break;
-          }
-          if (cursor == first) {
-            first = cursor.next;
-            cursor.prev = null;
-          } else {
-            cursor.prev.next = cursor.next;
-            if (cursor.next != null) {
-              cursor.next.prev = cursor.prev;
-            }
-          }
-          if (cursor == last) {
-            last = cursor.prev;
-          }
-
-          break;
-        }
-        cursor = cursor.next;
+      for (int x = i + 1; x < this.size; x++) {
+        this.seats[x-1] = this.seats[x];
       }
+      seats[--this.size] = null; 
 
 
       System.out.println("게시글을 삭제하였습니다.");
@@ -172,16 +135,22 @@ public class SeatHandler {
     }
   }
 
-  Seat findByNo(int seatNo) {
-    Node cursor = first;
-    while (cursor != null) {
-      Seat t = cursor.seat;
-      if (t.no == seatNo) {
-        return t;
+  int indexOf(int taskNo) {
+    for (int i = 0; i < this.size; i++) {
+      Seat seat = this.seats[i];
+      if (seat.no == taskNo) {
+        return i;
       }
-      cursor = cursor.next;
     }
-    return null;
+    return -1;
+  }
+
+  Seat findByNo(int seatNo) {
+    int i = indexOf(seatNo);
+    if (i == -1) 
+      return null;
+    else 
+      return this.seats[i];
   }
 
   String gradeLabel(int sgrade) {
@@ -195,15 +164,6 @@ public class SeatHandler {
     }
   }
 
-  static class Node{
-    Seat seat;
-    Node next;
-    Node prev;
-
-    Node(Seat t) {
-      this.seat = t;
-    }
-  }
 }
 
 

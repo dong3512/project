@@ -5,8 +5,8 @@ import com.dong.util.Prompt;
 
 public class MemberHandler {
 
-  Node first;
-  Node last;
+  static final int LENGTH = 100;
+  Member[] members = new Member[LENGTH];
   int size = 0;
 
   public void category() {
@@ -46,33 +46,16 @@ public class MemberHandler {
     m.hp = Prompt.inputString("전화번호");
     m.registeredDate = new java.sql.Date(System.currentTimeMillis());
 
-    Node node = new Node(m);
-
-
-    if (last == null) {
-      last = node;
-      first = node;
-    }else {
-      last.next = node;
-      node.prev = last;
-      last = node;
-    }
-
-    this.size++;
-
-    System.out.println("회원을 등록하였습니다.");
+    this.members[this.size++] = m;
   }
 
   public void list(){
     System.out.println("[회원 목록]");
 
-    Node cursor = first;
-
-    while (cursor != null) {
-      Member m = cursor.member;
+    for (int i = 0; i < this.size; i++) {
+      Member m = this.members[i];
       System.out.printf("%s, %s, %s, %s, %s, %s\n",
           m.no, m.name, m.email, m.photo, m.hp, m.registeredDate);
-      cursor = cursor.next;
     }
   }
 
@@ -125,8 +108,8 @@ public class MemberHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    Member member = findByNo(no);
-    if (member == null) {
+    int i = indexOf(no);
+    if (i == -1) {
       System.out.println("해당 번호의 회원이 없습니다.");
       return;
     }
@@ -134,70 +117,44 @@ public class MemberHandler {
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N)");
 
     if (input.equalsIgnoreCase("Y")) {
-      Node cursor = first;
-      while (cursor != null) {
-        if (cursor.member == member) {
-          this.size --;
-          if (first == last) {
-            first = last = null;
-            break;
-          }
-          if (cursor == first) {
-            first = cursor.next;
-            cursor.prev = null;
-          }else {
-            cursor.prev.next = cursor.next;
-            if (cursor.next != null) {
-              cursor.next.prev = cursor.prev;
-            }
-          }
-          if (cursor == last) {
-            last = cursor.prev;
-          }
-          break;
-        }
-        cursor = cursor.next;
+      for (int x = i + 1; x < this.size; x++) {
+        this.members[x-1] = this.members[x];
       }
+      members[--this.size] = null; 
+
       System.out.println("회원을 삭제하였습니다.");
 
-    }else {
+    } else {
       System.out.println("회원 삭제를 취소하였습니다.");
     }
   }
 
-
-  Member findByNo(int memberNo) {
-    Node cursor = first;
-    while (cursor != null) {
-      Member m = cursor.member;
-      if(m.no == memberNo) {
-        return m;
+  int indexOf(int memberNo) {
+    for (int i = 0; i < this.size; i++) {
+      Member member = this.members[i];
+      if (member.no == memberNo) {
+        return i;
       }
-      cursor = cursor.next;
     }
-    return null;
+    return -1;
   }
 
-  public boolean exist(String name) {
-    Node cursor = first;
+  Member findByNo(int memberNo) {
+    int i = indexOf(memberNo);
+    if (i == -1) 
+      return null;
+    else 
+      return this.members[i];
+  }
 
-    while (cursor != null) {
-      Member m = cursor.member;
-      if (name.equals(m.name)) {
+
+  public boolean exist(String name) {
+    for (int i = 0; i < this.size; i++) {
+      if (name.equals(this.members[i].name)) {
         return true;
       }
-      cursor = cursor.next;
     }
     return false;
   }
 
-  static class Node{
-    Member member;
-    Node next;
-    Node prev;
-
-    Node(Member m){
-      this.member = m;
-    }
-  }
 }

@@ -6,10 +6,7 @@ import com.dong.util.Prompt;
 
 public class BoardHandler {
 
-  Node first;
-  Node last;
-  int size = 0;
-
+  BoardList boardList = new BoardList();
 
   public void category( ) {
     System.out.println("[칭찬게시판]");
@@ -53,35 +50,21 @@ public class BoardHandler {
     b.writer = Prompt.inputString("작성자");
     b.registeredDate = new Date(System.currentTimeMillis());
 
-    Node node = new Node(b);
+    boardList.add(b);
 
-    if (last == null) {
-      last = node ;
-      first = node;
-    }else {
-      last.next = node;
-      node.prev = last;
-      last = node;
-    }
-
-    this.size ++;
     System.out.println("게시글을 등록하였습니다.");
   }
 
   public  void list() {
     System.out.println("[칭찬게시글 목록]");
 
-    Node cursor = first;
+    Board[] boards = boardList.toArray();
 
-    while (cursor != null) {
-      Board b = cursor.board;
-
-
+    for (Board b : boards) {
 
       // 번호, 제목, ,전하고싶은말, 등록일, 작성자, 조회수
       System.out.printf("%d, %s, %s, %s, %s, %s\n", 
           b.no, b.title, b.message,b.registeredDate, b.writer, b.viewCount );
-      cursor = cursor.next;
     }
   }
 
@@ -90,7 +73,7 @@ public class BoardHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    Board board = findByNo(no);
+    Board board = boardList.get(no);
     if (board == null) {
       System.out.println("해당 번호의 게시글이 없습니다.");
       return;
@@ -109,7 +92,7 @@ public class BoardHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    Board board = findByNo(no);
+    Board board = boardList.get(no);
     if (board == null) {
       System.out.println("해당 번호의 게시글이 없습니다.");
       return;
@@ -136,8 +119,8 @@ public class BoardHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    Board board = findByNo(no);
-    if ( board == null) {
+    Board board = boardList.get(no);
+    if (board == null) {
       System.out.println("해당 번호의 게시글이 없습니다.");
       return;
     }
@@ -145,56 +128,13 @@ public class BoardHandler {
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N)");
 
     if (input.equalsIgnoreCase("Y")) {
-      Node cursor = first;
-      while (cursor != null) {
-        if(cursor.board == board) {
-          this.size--;
-          if (first == last) {
-            first = last = null;
-            break;
-          }
-          if (cursor == first) {
-            first = cursor.next;
-            cursor.prev = null;
-          }else {
-            cursor.prev.next = cursor.next;
-            if (cursor.next != null) {
-              cursor.next.prev = cursor.prev;
-            }
-          }
-          if (cursor == last) {
-            last = cursor.prev;
-          }
-          break;
-        }
-        cursor = cursor.next;
-      }
+      boardList.delete(no);
+
       System.out.println("게시글을 삭제하였습니다.");
 
-    }else {
+    } else {
       System.out.println("게시글 삭제를 취소하였습니다.");
     }
   }
 
-  Board findByNo(int boardNo) {
-    Node cursor = first;
-    while (cursor != null) {
-      Board b = cursor.board;
-      if (b.no == boardNo) {
-        return b;
-      }
-      cursor = cursor.next;
-    }
-    return null;
-  }
-
-  static class Node {
-    Board board;
-    Node next;
-    Node prev;
-
-    Node(Board b) {
-      this.board = b;
-    }
-  }
 }

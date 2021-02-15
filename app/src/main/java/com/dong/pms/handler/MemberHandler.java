@@ -5,9 +5,7 @@ import com.dong.util.Prompt;
 
 public class MemberHandler {
 
-  static final int LENGTH = 100;
-  Member[] members = new Member[LENGTH];
-  int size = 0;
+  public MemberList memberList = new MemberList();
 
   public void category() {
     System.out.println("[회원정보]");
@@ -46,14 +44,17 @@ public class MemberHandler {
     m.hp = Prompt.inputString("전화번호");
     m.registeredDate = new java.sql.Date(System.currentTimeMillis());
 
-    this.members[this.size++] = m;
+    memberList.add(m);
+
+    System.out.println("회원을 등록하였습니다.");
   }
 
   public void list(){
     System.out.println("[회원 목록]");
 
-    for (int i = 0; i < this.size; i++) {
-      Member m = this.members[i];
+    Member[] members = memberList.toArray();
+
+    for (Member m : members) {
       System.out.printf("%s, %s, %s, %s, %s, %s\n",
           m.no, m.name, m.email, m.photo, m.hp, m.registeredDate);
     }
@@ -63,7 +64,7 @@ public class MemberHandler {
     System.out.println("[회원 상세보기]");
     int no = Prompt.inputInt("번호? ");
 
-    Member member = findByNo(no);
+    Member member = memberList.get(no);
     if (member == null) {
       System.out.println("해당 번호의 게시글이 없습니다.");
       return;
@@ -81,7 +82,7 @@ public class MemberHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    Member member = findByNo(no);
+    Member member = memberList.get(no);
     if ( member == null) {
       System.out.println("해당 번호의 회원이 없습니다.");
       return;
@@ -108,8 +109,8 @@ public class MemberHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    int i = indexOf(no);
-    if (i == -1) {
+    Member member = memberList.get(no);
+    if (member == null) {
       System.out.println("해당 번호의 회원이 없습니다.");
       return;
     }
@@ -117,44 +118,12 @@ public class MemberHandler {
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N)");
 
     if (input.equalsIgnoreCase("Y")) {
-      for (int x = i + 1; x < this.size; x++) {
-        this.members[x-1] = this.members[x];
-      }
-      members[--this.size] = null; 
-
+      memberList.delete(no);
       System.out.println("회원을 삭제하였습니다.");
 
     } else {
       System.out.println("회원 삭제를 취소하였습니다.");
     }
-  }
-
-  int indexOf(int memberNo) {
-    for (int i = 0; i < this.size; i++) {
-      Member member = this.members[i];
-      if (member.no == memberNo) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  Member findByNo(int memberNo) {
-    int i = indexOf(memberNo);
-    if (i == -1) 
-      return null;
-    else 
-      return this.members[i];
-  }
-
-
-  public boolean exist(String name) {
-    for (int i = 0; i < this.size; i++) {
-      if (name.equals(this.members[i].name)) {
-        return true;
-      }
-    }
-    return false;
   }
 
 }

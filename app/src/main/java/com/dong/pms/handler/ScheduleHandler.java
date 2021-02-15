@@ -5,14 +5,12 @@ import com.dong.util.Prompt;
 
 public class ScheduleHandler {
 
-  static final int LENGTH = 100;
-  Schedule[] schedules = new Schedule[LENGTH];
-  int size = 0;
+  ScheduleList scheduleList = new ScheduleList();
 
-  MemberHandler memberList;
+  MemberList memberList;
 
-  public ScheduleHandler(MemberHandler memberHandler) {
-    this.memberList = memberHandler;
+  public ScheduleHandler(MemberList memberList) {
+    this.memberList = memberList;
   }
 
   public void category() {
@@ -62,15 +60,16 @@ public class ScheduleHandler {
     }
     s.pilot = Prompt.inputString("조종사: ");
 
-    this.schedules[this.size++] = s;
+    scheduleList.add(s);
+    System.out.println("비행일정을 등록했습니다.");
+
   }
 
   public void list(){
     System.out.println("[비행일정 목록]");
 
-
-    for (int i = 0; i < size; i++) {
-      Schedule s = schedules[i];
+    Schedule[] schedules = scheduleList.toArray();
+    for(Schedule s : schedules) {
       System.out.printf("%s, %s, %s, %s, %s, %s, %s\n",
           s.no, s.destination, s.airno, s.dtime, s.atime, s.name, s.pilot);
     }
@@ -81,7 +80,7 @@ public class ScheduleHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    Schedule schedule = findByNo(no);
+    Schedule schedule = scheduleList.get(no);
     if(schedule == null) {
       System.out.println("해당 번호의 일정이 없습니다.");
       return;
@@ -101,7 +100,7 @@ public class ScheduleHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    Schedule schedule = findByNo(no);
+    Schedule schedule = scheduleList.get(no);
 
     if(schedule == null) {
       System.out.println("해당 번호의 프로젝트가 없습니다.");
@@ -137,8 +136,8 @@ public class ScheduleHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    int i = indexOf(no);
-    if (i == -1) {
+    Schedule schedule = scheduleList.get(no);
+    if (schedule == null) {
       System.out.println("해당 번호의 일정이 없습니다.");
       return;
     }
@@ -146,32 +145,11 @@ public class ScheduleHandler {
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N)");
 
     if (input.equalsIgnoreCase("Y")) {
-      for (int x = i + 1; x < this.size; x++) {
-        this.schedules[x-1] = this.schedules[x];
-      }
-      schedules[--this.size] = null;
+      scheduleList.delete(no);
       System.out.println("비행일정을 삭제하였습니다.");
     }else {
       System.out.println("비행일정 삭제를 취소하였습니다.");
     }
-  }
-
-  int indexOf(int scheduleNo) {
-    for (int i = 0; i < this.size; i++) {
-      Schedule schedule = this.schedules[i];
-      if (schedule.no == scheduleNo) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  Schedule findByNo(int scheduleNo) {
-    int i = indexOf(scheduleNo);
-    if (i == -1) 
-      return null;
-    else 
-      return this.schedules[i];
   }
 
   String inputMember(String promptTitle) {
@@ -180,7 +158,7 @@ public class ScheduleHandler {
       if(name.length() == 0) {
         return null;
       }
-      if(memberList.exist(name)) {
+      if(this.memberList.exist(name)) {
         return name;
       }
       System.out.println("등록된 회원이 아닙니다.");

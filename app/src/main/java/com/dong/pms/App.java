@@ -8,13 +8,11 @@ import com.dong.util.Prompt;
 
 public class App {
   public static void main(String[] args) {
-    BoardHandler boardList = new BoardHandler();
 
-    MemberHandler memberList = new MemberHandler();
-
-    ScheduleHandler scheduleList = new ScheduleHandler(memberList);
-
-    SeatHandler seatList = new SeatHandler();
+    BoardHandler boardHandler = new BoardHandler();
+    MemberHandler memberHandler = new MemberHandler();
+    ScheduleHandler scheduleHandler = new ScheduleHandler(memberHandler);
+    SeatHandler seatHandler = new SeatHandler();
 
     System.out.println("[항공사 회원관리프로그램]");
 
@@ -26,16 +24,16 @@ public class App {
 
         switch (command) {
           case "1":
-            memberList.category();
+            memberHandler.category();
             break;
           case "2":
-            scheduleList.category();
+            scheduleHandler.category();
             break;
           case "3":
-            seatList.category();
+            seatHandler.category();
             break;
           case "4":
-            boardList.category();
+            boardHandler.category();
             break;
           case "quit":
           case "exit":

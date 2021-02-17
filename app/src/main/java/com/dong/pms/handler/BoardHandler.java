@@ -3,6 +3,7 @@ package com.dong.pms.handler;
 import java.sql.Date;
 import com.dong.pms.domain.Board;
 import com.dong.util.List;
+import com.dong.util.ListIterator;
 import com.dong.util.Prompt;
 
 public class BoardHandler {
@@ -59,10 +60,10 @@ public class BoardHandler {
   public  void list() {
     System.out.println("[칭찬게시글 목록]");
 
-    Object[] list = boardList.toArray();
+    ListIterator iterator = new ListIterator(this.boardList);
 
-    for (Object obj : list) {
-      Board b = (Board) obj;
+    while (iterator.hasNext()) {
+      Board b = (Board) iterator.next();
       // 번호, 제목, ,전하고싶은말, 등록일, 작성자, 조회수
       System.out.printf("%d, %s, %s, %s, %s, %s\n", 
           b.getNo(), b.getTitle(), b.getMessage(),b.getRegisteredDate(), b.getWriter(), b.getViewCount());
@@ -120,8 +121,8 @@ public class BoardHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    int index = indexOf(no);
-    if (index == -1) {
+    Board board = findByNo(no);
+    if (board == null) {
       System.out.println("해당 번호의 게시글이 없습니다.");
       return;
     }
@@ -129,24 +130,13 @@ public class BoardHandler {
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N)");
 
     if (input.equalsIgnoreCase("Y")) {
-      boardList.delete(index);
+      boardList.delete(board);
 
       System.out.println("게시글을 삭제하였습니다.");
 
     } else {
       System.out.println("게시글 삭제를 취소하였습니다.");
     }
-  }
-
-  private int indexOf(int boardNo) {
-    Object[] list = boardList.toArray();
-    for (int i = 0; i < list.length; i++) {
-      Board b = (Board) list[i];
-      if (b.getNo() == boardNo) {
-        return i;
-      }
-    }
-    return -1;
   }
 
   private Board findByNo(int boardNo) {

@@ -2,6 +2,7 @@ package com.dong.pms.handler;
 
 import com.dong.pms.domain.Seat;
 import com.dong.util.List;
+import com.dong.util.ListIterator;
 import com.dong.util.Prompt;
 
 public class SeatHandler {
@@ -55,9 +56,10 @@ public class SeatHandler {
   public void list(){
     System.out.println("[좌석 목록]");
 
-    Object[] list = seatList.toArray();
-    for (Object obj : list) {
-      Seat t = (Seat) obj;
+    ListIterator iterator = new ListIterator(this.seatList);
+
+    while (iterator.hasNext()) {
+      Seat t = (Seat) iterator.next();
       System.out.printf("%s, %s, %s, %s, %s\n",t.getNo(),t.getMgrade(),gradeLabel(t.getSgrade()),t.getSno(), t.getEtc());
     }
   }
@@ -116,8 +118,8 @@ public class SeatHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    int index = indexOf(no);
-    if (index == -1) {
+    Seat seat = findByNo(no);
+    if (seat == null) {
       System.out.println("해당 번호의 좌석이 없습니다.");
       return;
     }
@@ -125,7 +127,7 @@ public class SeatHandler {
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N)");
 
     if(input.equalsIgnoreCase("Y")) {
-      seatList.delete(index);
+      seatList.delete(seat);
 
       System.out.println("게시글을 삭제하였습니다.");
     }else {
@@ -142,17 +144,6 @@ public class SeatHandler {
       default:
         return "퍼스트";
     }
-  }
-
-  private int indexOf(int seatNo) {
-    Object[] list = seatList.toArray();
-    for (int i = 0; i < list.length; i++) {
-      Seat t = (Seat) list[i];
-      if (t.getNo() == seatNo) {
-        return i;
-      }
-    }
-    return -1;
   }
 
   private Seat findByNo(int seatNo) {

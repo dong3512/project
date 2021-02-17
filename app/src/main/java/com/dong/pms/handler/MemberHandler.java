@@ -2,6 +2,7 @@ package com.dong.pms.handler;
 
 import com.dong.pms.domain.Member;
 import com.dong.util.List;
+import com.dong.util.ListIterator;
 import com.dong.util.Prompt;
 
 public class MemberHandler {
@@ -57,10 +58,10 @@ public class MemberHandler {
   public void list(){
     System.out.println("[회원 목록]");
 
-    Object[] list = memberList.toArray();
+    ListIterator iterator = new ListIterator(this.memberList);
 
-    for (Object obj : list) {
-      Member m = (Member) obj;
+    while (iterator.hasNext()) {
+      Member m = (Member) iterator.next();
       System.out.printf("%s, %s, %s, %s, %s, %s\n",
           m.getNo(), m.getName(), m.getEmail(), m.getPhoto(), m.getHp(), m.getRegisteredDate());
     }
@@ -115,8 +116,8 @@ public class MemberHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    int index = indexOf(no);
-    if (index == -1) {
+    Member member = findByNo(no);
+    if (member == null) {
       System.out.println("해당 번호의 회원이 없습니다.");
       return;
     }
@@ -124,7 +125,7 @@ public class MemberHandler {
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N)");
 
     if (input.equalsIgnoreCase("Y")) {
-      memberList.delete(index);
+      memberList.delete(member);
       System.out.println("회원을 삭제하였습니다.");
 
     } else {

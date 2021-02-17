@@ -2,6 +2,7 @@ package com.dong.pms.handler;
 
 import com.dong.pms.domain.Schedule;
 import com.dong.util.List;
+import com.dong.util.ListIterator;
 import com.dong.util.Prompt;
 
 public class ScheduleHandler {
@@ -69,9 +70,10 @@ public class ScheduleHandler {
   public void list(){
     System.out.println("[비행일정 목록]");
 
-    Object[] list = scheduleList.toArray();
-    for(Object obj : list) {
-      Schedule s = (Schedule) obj;
+    ListIterator iterator = new ListIterator(this.scheduleList);
+
+    while (iterator.hasNext()) {
+      Schedule s = (Schedule) iterator.next();
       System.out.printf("%s, %s, %s, %s, %s, %s, %s\n",
           s.getNo(), s.getDestination(), s.getAirno(), s.getDtime(), s.getAtime(), s.getName(), s.getPilot());
     }
@@ -137,8 +139,8 @@ public class ScheduleHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    int index = indexOf(no);
-    if (index == -1) {
+    Schedule schedule = findByNo(no);
+    if (schedule == null) {
       System.out.println("해당 번호의 일정이 없습니다.");
       return;
     }
@@ -146,7 +148,7 @@ public class ScheduleHandler {
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N)");
 
     if (input.equalsIgnoreCase("Y")) {
-      scheduleList.delete(index);
+      scheduleList.delete(schedule);
       System.out.println("비행일정을 삭제하였습니다.");
     }else {
       System.out.println("비행일정 삭제를 취소하였습니다.");

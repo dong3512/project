@@ -4,11 +4,11 @@ import com.dong.pms.handler.BoardHandler;
 import com.dong.pms.handler.MemberHandler;
 import com.dong.pms.handler.ScheduleHandler;
 import com.dong.pms.handler.SeatHandler;
+import com.dong.util.Iterator;
 import com.dong.util.Prompt;
 import com.dong.util.Queue;
 import com.dong.util.QueueIterator;
 import com.dong.util.Stack;
-import com.dong.util.StackIterator;
 
 public class App {
 
@@ -50,10 +50,10 @@ public class App {
             boardHandler.category();
             break;
           case "history":
-            printCommandHistory();
+            printCommandHistory(commandStack.iterator());
             break;
           case "history2":
-            printCommandHistory2();
+            printCommandHistory(new QueueIterator(commandQueue));
             break;
           case "quit":
           case "exit":
@@ -67,8 +67,7 @@ public class App {
     Prompt.close();
   }
 
-  static void printCommandHistory() throws CloneNotSupportedException{
-    StackIterator iterator = new StackIterator(commandStack);
+  static void printCommandHistory(Iterator iterator) {
 
     int count = 0;
     while (iterator.hasNext()) {
@@ -82,18 +81,4 @@ public class App {
     }
   }
 
-  static void printCommandHistory2() throws CloneNotSupportedException{
-    QueueIterator iterator = new QueueIterator(commandQueue);
-
-    int count = 0;
-    while (iterator.hasNext()) {
-      System.out.println(iterator.next());
-      if ((++count % 5) == 0) {
-        String input = Prompt.inputString(": ");
-        if (input.equalsIgnoreCase("q")) {
-          break;
-        }
-      }
-    }
-  }
 }

@@ -1,8 +1,8 @@
 package com.dong.pms.handler;
 
 import com.dong.pms.domain.Seat;
+import com.dong.util.Iterator;
 import com.dong.util.List;
-import com.dong.util.ListIterator;
 import com.dong.util.Prompt;
 
 public class SeatHandler {
@@ -53,10 +53,10 @@ public class SeatHandler {
     System.out.println("좌석을 등록했습니다.");
   }
 
-  public void list(){
+  public void list() throws CloneNotSupportedException {
     System.out.println("[좌석 목록]");
 
-    ListIterator iterator = new ListIterator(this.seatList);
+    Iterator iterator = seatList.iterator();
 
     while (iterator.hasNext()) {
       Seat t = (Seat) iterator.next();

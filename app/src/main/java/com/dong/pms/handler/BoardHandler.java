@@ -2,8 +2,8 @@ package com.dong.pms.handler;
 
 import java.sql.Date;
 import com.dong.pms.domain.Board;
+import com.dong.util.Iterator;
 import com.dong.util.List;
-import com.dong.util.ListIterator;
 import com.dong.util.Prompt;
 
 public class BoardHandler {
@@ -57,10 +57,10 @@ public class BoardHandler {
     System.out.println("게시글을 등록하였습니다.");
   }
 
-  public  void list() {
+  public  void list() throws CloneNotSupportedException {
     System.out.println("[칭찬게시글 목록]");
 
-    ListIterator iterator = new ListIterator(this.boardList);
+    Iterator iterator = boardList.iterator();
 
     while (iterator.hasNext()) {
       Board b = (Board) iterator.next();

@@ -1,8 +1,8 @@
 package com.dong.pms.handler;
 
 import com.dong.pms.domain.Schedule;
+import com.dong.util.Iterator;
 import com.dong.util.List;
-import com.dong.util.ListIterator;
 import com.dong.util.Prompt;
 
 public class ScheduleHandler {
@@ -67,10 +67,10 @@ public class ScheduleHandler {
 
   }
 
-  public void list(){
+  public void list() throws CloneNotSupportedException {
     System.out.println("[비행일정 목록]");
 
-    ListIterator iterator = new ListIterator(this.scheduleList);
+    Iterator iterator = scheduleList.iterator();
 
     while (iterator.hasNext()) {
       Schedule s = (Schedule) iterator.next();
@@ -153,17 +153,6 @@ public class ScheduleHandler {
     }else {
       System.out.println("비행일정 삭제를 취소하였습니다.");
     }
-  }
-
-  private int indexOf(int scheduleNo) {
-    Object[] list = scheduleList.toArray();
-    for (int i = 0; i < list.length; i++) {
-      Schedule s = (Schedule) list[i];
-      if (s.getNo() == scheduleNo) {
-        return i;
-      }
-    }
-    return -1;
   }
 
   private Schedule findByNo(int scheduleNo) {

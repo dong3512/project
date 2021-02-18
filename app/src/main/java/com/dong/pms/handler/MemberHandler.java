@@ -1,8 +1,8 @@
 package com.dong.pms.handler;
 
 import com.dong.pms.domain.Member;
+import com.dong.util.Iterator;
 import com.dong.util.List;
-import com.dong.util.ListIterator;
 import com.dong.util.Prompt;
 
 public class MemberHandler {
@@ -55,10 +55,10 @@ public class MemberHandler {
     System.out.println("회원을 등록하였습니다.");
   }
 
-  public void list(){
+  public void list() throws CloneNotSupportedException{
     System.out.println("[회원 목록]");
 
-    ListIterator iterator = new ListIterator(this.memberList);
+    Iterator iterator = memberList.iterator();
 
     while (iterator.hasNext()) {
       Member m = (Member) iterator.next();
@@ -144,17 +144,6 @@ public class MemberHandler {
         System.out.println("등록된 회원이 아닙니다.");
       }
     }
-  }
-
-  private int indexOf(int memberNo) {
-    Object[] list = memberList.toArray();
-    for (int i = 0; i < list.length; i++) {
-      Member m = (Member) list[i];
-      if (m.getNo() == memberNo) {
-        return i;
-      }
-    }
-    return -1;
   }
 
   private Member findByNo(int boardNo) {

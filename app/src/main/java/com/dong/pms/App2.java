@@ -9,7 +9,7 @@ import com.dong.pms.handler.ScheduleHandler;
 import com.dong.pms.handler.SeatHandler;
 import com.dong.util.Prompt;
 
-public class App {
+public class App2 {
 
   static ArrayDeque<String> commandStack = new ArrayDeque<>();
   static LinkedList<String> commandQueue = new LinkedList<>();

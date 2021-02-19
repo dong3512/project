@@ -5,7 +5,7 @@ import java.util.Iterator;
 import com.dong.pms.domain.Seat;
 import com.dong.util.Prompt;
 
-public class SeatHandler {
+public class SeatAddHandler {
 
   private ArrayList<Seat> seatList = new ArrayList<>();
 

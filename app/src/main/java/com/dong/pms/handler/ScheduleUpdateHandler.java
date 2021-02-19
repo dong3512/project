@@ -5,13 +5,13 @@ import java.util.Iterator;
 import com.dong.pms.domain.Schedule;
 import com.dong.util.Prompt;
 
-public class ScheduleHandler {
+public class ScheduleUpdateHandler {
 
   private ArrayList<Schedule> scheduleList = new ArrayList<>();
 
   private MemberHandler memberHandler;
 
-  public ScheduleHandler(MemberHandler memberHandler) {
+  public ScheduleUpdateHandler(MemberHandler memberHandler) {
     this.memberHandler = memberHandler;
   }
 

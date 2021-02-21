@@ -32,17 +32,4 @@ public abstract class AbstractMemberHandler {
   }
 
 
-  //  public String inputMember(String promptTitle) {
-  //    while(true) {
-  //      String name = Prompt.inputString(promptTitle);
-  //      if(name.length() == 0) {
-  //        return null;
-  //      } else if (findByName(name) != null) {
-  //        return name;
-  //      } else {
-  //        System.out.println("등록된 회원이 아닙니다.");
-  //      }
-  //    }
-  //  }
-
 }

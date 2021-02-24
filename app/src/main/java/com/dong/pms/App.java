@@ -18,7 +18,7 @@ public class App {
 
     BoardHandler boardHandler = new BoardHandler();
     MemberHandler memberHandler = new MemberHandler();
-    ScheduleHandler scheduleHandler = new ScheduleHandler(memberHandler);
+    ScheduleHandler scheduleHandler = new ScheduleHandler();
     SeatHandler seatHandler = new SeatHandler();
 
     System.out.println("[항공사 회원관리프로그램]");

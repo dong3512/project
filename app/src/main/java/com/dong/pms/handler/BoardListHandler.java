@@ -9,7 +9,8 @@ public class BoardListHandler extends AbstractBoardHandler{
   public BoardListHandler(List<Board> boardList) {
     super(boardList);
   }
-  public  void list() throws CloneNotSupportedException {
+  @Override
+  public  void service() {
     System.out.println("[칭찬게시글 목록]");
 
     Iterator<Board> iterator = boardList.iterator();

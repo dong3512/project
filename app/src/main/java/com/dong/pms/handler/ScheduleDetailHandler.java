@@ -6,12 +6,13 @@ import com.dong.util.Prompt;
 
 public class ScheduleDetailHandler extends AbstractScheduleHandler{
 
-  public ScheduleDetailHandler(List<Schedule> scheduleList, MemberValidatorHandler memberValidatorHandler) {
+  public ScheduleDetailHandler(List<Schedule> scheduleList) {
     super(scheduleList);
   }
 
 
-  public void detail(){
+  @Override
+  public void service(){
     System.out.println("[비행일정 상세조회]");
 
     int no = Prompt.inputInt("번호? ");

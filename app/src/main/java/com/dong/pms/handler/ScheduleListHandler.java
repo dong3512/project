@@ -6,12 +6,13 @@ import com.dong.pms.domain.Schedule;
 
 public class ScheduleListHandler extends AbstractScheduleHandler{
 
-  public ScheduleListHandler(List<Schedule> scheduleList, MemberValidatorHandler memberValidatorHandler) {
+  public ScheduleListHandler(List<Schedule> scheduleList) {
     super(scheduleList);
   }
 
 
-  public void list() throws CloneNotSupportedException {
+  @Override
+  public void service()  {
     System.out.println("[비행일정 목록]");
 
     Iterator<Schedule> iterator = scheduleList.iterator();

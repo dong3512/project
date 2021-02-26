@@ -10,7 +10,8 @@ public class ScheduleDeleteHandler extends AbstractScheduleHandler{
     super(scheduleList);
   }
 
-  public void delete(){
+  @Override
+  public void service(){
     System.out.println("[비행일정 삭제]");
 
     int no = Prompt.inputInt("번호? ");

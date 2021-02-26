@@ -3,7 +3,7 @@ package com.dong.pms.handler;
 import java.util.List;
 import com.dong.pms.domain.Schedule;
 
-public abstract class AbstractScheduleHandler {
+public abstract class AbstractScheduleHandler implements Command{
 
   protected List<Schedule> scheduleList;
 

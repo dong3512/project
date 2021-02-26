@@ -14,7 +14,8 @@ public class ScheduleAddHandler extends AbstractScheduleHandler{
   }
 
 
-  public void add(){
+  @Override
+  public void service(){
     System.out.println("[비행일정]");
 
     Schedule s = new Schedule();

@@ -9,7 +9,8 @@ public class SeatDeleteHandler extends AbstractSeatHandler{
   public SeatDeleteHandler(List<Seat> seatList) {
     super(seatList);
   }
-  public void delete(){
+  @Override
+  public void service(){
     System.out.println("[좌석정보 삭제]");
 
     int no = Prompt.inputInt("번호? ");

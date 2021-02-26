@@ -3,7 +3,7 @@ package com.dong.pms.handler;
 import java.util.List;
 import com.dong.pms.domain.Seat;
 
-public abstract class AbstractSeatHandler {
+public abstract class AbstractSeatHandler implements Command{
 
   protected List<Seat> seatList ;
 

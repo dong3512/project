@@ -10,6 +10,11 @@ public class MemberValidatorHandler extends AbstractMemberHandler {
     super(memberList);
   }
 
+  @Override
+  public void service() {
+
+  }
+
   public String inputMember(String promptTitle) {
     while (true) {
       String name = Prompt.inputString(promptTitle);

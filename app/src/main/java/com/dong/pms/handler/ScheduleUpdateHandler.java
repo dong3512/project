@@ -14,7 +14,8 @@ public class ScheduleUpdateHandler extends AbstractScheduleHandler{
   }
 
 
-  public void update(){
+  @Override
+  public void service(){
     System.out.println("[비행일정 수정]");
 
     int no = Prompt.inputInt("번호? ");

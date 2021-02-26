@@ -3,7 +3,7 @@ package com.dong.pms.handler;
 import java.util.List;
 import com.dong.pms.domain.Board;
 
-public abstract class AbstractBoardHandler {
+public abstract class AbstractBoardHandler implements Command{
 
   protected List<Board> boardList;
 

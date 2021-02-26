@@ -10,7 +10,8 @@ public class SeatDetailHandler extends AbstractSeatHandler{
     super(seatList);
   }
 
-  public void detail(){
+  @Override
+  public void service(){
     System.out.println("[좌석 상세보기]");
 
     int no = Prompt.inputInt("번호? ");

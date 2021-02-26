@@ -10,7 +10,8 @@ public class SeatUpdateHandler extends AbstractSeatHandler{
     super(seatList);
   }
 
-  public void update(){
+  @Override
+  public void service(){
     System.out.println("[좌석정보 수정]");
 
     int no = Prompt.inputInt("번호? ");

@@ -10,7 +10,8 @@ public class SeatListHandler extends AbstractSeatHandler{
     super(seatList);
   }
 
-  public void list() throws CloneNotSupportedException {
+  @Override
+  public void service()  {
     System.out.println("[좌석 목록]");
 
     Iterator<Seat> iterator = seatList.iterator();

@@ -3,7 +3,7 @@ package com.dong.pms.handler;
 import java.util.List;
 import com.dong.pms.domain.Member;
 
-public abstract class AbstractMemberHandler {
+public abstract class AbstractMemberHandler implements Command{
 
   protected List<Member> memberList;
 

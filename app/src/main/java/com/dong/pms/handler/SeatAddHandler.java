@@ -11,7 +11,8 @@ public class SeatAddHandler extends AbstractSeatHandler{
   }
 
 
-  public  void add(){
+  @Override
+  public  void service(){
     System.out.println("[좌석 등록]");
 
     Seat t = new Seat();

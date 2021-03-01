@@ -1,5 +1,7 @@
 package com.dong.pms;
 
+import java.io.FileInputStream;
+import java.sql.Date;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +46,54 @@ public class App2 {
     ArrayList<Member> memberList = new ArrayList<>();
     LinkedList<Schedule> scheduleList = new LinkedList<>();
     ArrayList<Seat> seatList = new ArrayList<>();
+
+    try (FileInputStream in = new FileInputStream("boards.data")){
+      int size = in.read() << 8 | in.read();
+
+      for (int i = 0; i < size; i ++) {
+        Board b = new Board();
+
+        b.setNo(in.read() << 24 | in.read() << 16 | in.read() << 8 | in.read());
+
+        int len = in.read() << 8 | in.read();
+        byte[] buf = new byte[len];
+        in.read(buf);
+        b.setTitle(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        b.setName(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        b.setContent(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        b.setMessage(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        b.setWriter(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        b.setRegisteredDate(Date.valueOf(new String(buf, "UTF-8")));
+
+        b.setViewCount(in.read() << 24 | in.read() << 16 | in.read() << 8 | in.read());
+
+        boardList.add(b);
+      }
+      System.out.println("게시글 데이터 로딩!");
+    }catch (Exception e) {
+      System.out.println("게시글 데이터 로딩 중 오류발생!");
+    }
+
 
     HashMap<String,Command> commandMap = new HashMap<>();
 

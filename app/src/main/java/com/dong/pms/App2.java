@@ -1,5 +1,8 @@
 package com.dong.pms;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.sql.Date;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,12 +41,15 @@ public class App2 {
   static ArrayDeque<String> commandStack = new ArrayDeque<>();
   static LinkedList<String> commandQueue = new LinkedList<>();
 
-  public static void main(String[] args) throws CloneNotSupportedException{
+  static ArrayList<Board> boardList = new ArrayList<>();
+  static ArrayList<Member> memberList = new ArrayList<>();
+  static LinkedList<Schedule> scheduleList = new LinkedList<>();
 
-    ArrayList<Board> boardList = new ArrayList<>();
-    ArrayList<Member> memberList = new ArrayList<>();
-    LinkedList<Schedule> scheduleList = new LinkedList<>();
+  public static void main(String[] args) {
+
     ArrayList<Seat> seatList = new ArrayList<>();
+
+    loadBoards();
 
     HashMap<String,Command> commandMap = new HashMap<>();
 
@@ -108,7 +114,374 @@ public class App2 {
         }
         System.out.println();
       }
+
+    saveBoards();
+
     Prompt.close();
+  }
+
+  static void saveBoards() {
+    try (FileInputStream in = new FileInputStream("boards.data")){
+      int size = in.read() << 8 | in.read();
+
+      for (int i = 0; i < size; i++ ) {
+        Board b = new Board();
+
+        b.setNo(in.read() << 24 | in.read() << 16 | in.read() << 8 | in.read());
+
+        int len = in.read() << 8 | in.read();
+        byte[] buf = new byte[len];
+        in.read(buf);
+        b.setName(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        b.setTitle(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        b.setContent(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        b.setMessage(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        b.setWriter(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        b.setRegisteredDate(Date.valueOf(new String(buf, "UTF-8")));
+
+        b.setViewCount(in.read() << 24 | in.read() << 16 | in.read() << 8 | in.read());
+
+        boardList.add(b);
+      }
+      System.out.println("게시글 데이터 로딩!");
+    }catch (Exception e) {
+      System.out.println("게시글 데이터 로딩 중 오류 발생!");
+    }
+  }
+
+  static void loadBoards() {
+    try (FileOutputStream out = new FileOutputStream("boards.data")){
+
+      int size = boardList.size();
+      out.write(size >> 8);
+      out.write(size);
+
+      for (Board b : boardList) {
+        out.write(b.getNo() >> 24);
+        out.write(b.getNo() >> 16);
+        out.write(b.getNo() >> 8);
+        out.write(b.getNo());
+
+        byte[] buf = b.getName().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = b.getTitle().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = b.getContent().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = b.getMessage().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = b.getWriter().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = b.getRegisteredDate().toString().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        out.write(b.getViewCount() >> 24);
+        out.write(b.getViewCount() >> 16);
+        out.write(b.getViewCount() >> 8);
+        out.write(b.getViewCount());
+      }
+      System.out.println("게시글 데이터 저장!");
+    }catch(Exception e) {
+      System.out.println("게시글 데이터를 파일로 저장 중 오류 발생!");
+    }
+  }
+
+  static void saveMembers() {
+    try (FileInputStream in = new FileInputStream("members.data")){
+      int size = in.read() << 8 | in.read();
+
+      for (int i = 0; i < size; i++ ) {
+        Member m = new Member();
+
+        m.setNo(in.read() << 24 | in.read() << 16 | in.read() << 8 | in.read());
+
+        int len = in.read() << 8 | in.read();
+        byte[] buf = new byte[len];
+        in.read(buf);
+        m.setName(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        m.setEmail(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        m.setPhoto(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        m.setHp(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        m.setRegisteredDate(Date.valueOf(new String(buf, "UTF-8")));
+
+        memberList.add(m);
+      }
+      System.out.println("멤버 데이터 로딩!");
+    }catch (Exception e) {
+      System.out.println("멤버 데이터 로딩 중 오류 발생!");
+    }
+  }
+
+  static void loadMembers() {
+    try (FileOutputStream out = new FileOutputStream("members.data")){
+
+      int size = memberList.size();
+      out.write(size >> 8);
+      out.write(size);
+
+      for (Member m : memberList) {
+        out.write(m.getNo() >> 24);
+        out.write(m.getNo() >> 16);
+        out.write(m.getNo() >> 8);
+        out.write(m.getNo());
+
+        byte[] buf = m.getName().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = m.getEmail().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = m.getPhoto().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = m.getHp().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = m.getRegisteredDate().toString().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+      }
+      System.out.println("멤버 데이터 저장!");
+    }catch(Exception e) {
+      System.out.println("멤버 데이터를 파일로 저장 중 오류 발생!");
+    }
+  }
+
+  static void saveSchedules() {
+    try (FileInputStream in = new FileInputStream("schedules.data")){
+      int size = in.read() << 8 | in.read();
+
+      for (int i = 0; i < size; i++ ) {
+        Schedule s = new Schedule();
+
+        s.setNo(in.read() << 24 | in.read() << 16 | in.read() << 8 | in.read());
+
+        int len = in.read() << 8 | in.read();
+        byte[] buf = new byte[len];
+        in.read(buf);
+        s.setDestination(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        s.setAirno(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        s.setName(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        s.setDtime(Date.valueOf(new String(buf, "UTF-8")));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        s.setAtime(Date.valueOf(new String(buf, "UTF-8")));
+
+        scheudleList.add(s);
+      }
+      System.out.println("멤버 데이터 로딩!");
+    }catch (Exception e) {
+      System.out.println("멤버 데이터 로딩 중 오류 발생!");
+    }
+  }
+
+  static void loadMembers() {
+    try (FileOutputStream out = new FileOutputStream("members.data")){
+
+      int size = memberList.size();
+      out.write(size >> 8);
+      out.write(size);
+
+      for (Member m : memberList) {
+        out.write(m.getNo() >> 24);
+        out.write(m.getNo() >> 16);
+        out.write(m.getNo() >> 8);
+        out.write(m.getNo());
+
+        byte[] buf = m.getName().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = m.getEmail().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = m.getPhoto().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = m.getHp().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = m.getRegisteredDate().toString().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+      }
+      System.out.println("멤버 데이터 저장!");
+    }catch(Exception e) {
+      System.out.println("멤버 데이터를 파일로 저장 중 오류 발생!");
+    }
+  }
+
+  static void saveMembers() {
+    try (FileInputStream in = new FileInputStream("members.data")){
+      int size = in.read() << 8 | in.read();
+
+      for (int i = 0; i < size; i++ ) {
+        Member m = new Member();
+
+        m.setNo(in.read() << 24 | in.read() << 16 | in.read() << 8 | in.read());
+
+        int len = in.read() << 8 | in.read();
+        byte[] buf = new byte[len];
+        in.read(buf);
+        m.setName(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        m.setEmail(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        m.setPhoto(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        m.setHp(new String(buf, "UTF-8"));
+
+        len = in.read() << 8 | in.read();
+        buf = new byte[len];
+        in.read(buf);
+        m.setRegisteredDate(Date.valueOf(new String(buf, "UTF-8")));
+
+        memberList.add(m);
+      }
+      System.out.println("멤버 데이터 로딩!");
+    }catch (Exception e) {
+      System.out.println("멤버 데이터 로딩 중 오류 발생!");
+    }
+  }
+
+  static void loadMembers() {
+    try (FileOutputStream out = new FileOutputStream("members.data")){
+
+      int size = memberList.size();
+      out.write(size >> 8);
+      out.write(size);
+
+      for (Member m : memberList) {
+        out.write(m.getNo() >> 24);
+        out.write(m.getNo() >> 16);
+        out.write(m.getNo() >> 8);
+        out.write(m.getNo());
+
+        byte[] buf = m.getName().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = m.getEmail().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = m.getPhoto().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = m.getHp().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = m.getRegisteredDate().toString().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+      }
+      System.out.println("멤버 데이터 저장!");
+    }catch(Exception e) {
+      System.out.println("멤버 데이터를 파일로 저장 중 오류 발생!");
+    }
   }
 
   static void printCommandHistory(Iterator<String> iterator) {

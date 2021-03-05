@@ -1,8 +1,10 @@
 package com.dong.pms.domain;
 
+import java.io.Serializable;
 import java.sql.Time;
 
-public class Schedule {
+public class Schedule implements Serializable{
+  private static final long serialVersionUTD = 1L;
   private int no;
   private String destination ;
   private String airno ;

@@ -1,8 +1,11 @@
 package com.dong.pms.domain;
 
+import java.io.Serializable;
 import java.sql.Date;
 
-public class Board {
+public class Board implements Serializable{
+  private static final long serialVersionUTD = 1L;
+
   private int no;
   private String name;
   private String title;
@@ -11,8 +14,6 @@ public class Board {
   private String writer;
   private Date registeredDate;
   private int viewCount;
-
-
 
 
   @Override

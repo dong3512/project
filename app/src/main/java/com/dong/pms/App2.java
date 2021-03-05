@@ -1,16 +1,19 @@
 package com.dong.pms;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.sql.Date;
-import java.sql.Time;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import com.dong.pms.domain.Board;
 import com.dong.pms.domain.Member;
 import com.dong.pms.domain.Schedule;
@@ -44,18 +47,22 @@ public class App2 {
   static ArrayDeque<String> commandStack = new ArrayDeque<>();
   static LinkedList<String> commandQueue = new LinkedList<>();
 
-  static ArrayList<Board> boardList = new ArrayList<>();
-  static ArrayList<Member> memberList = new ArrayList<>();
-  static LinkedList<Schedule> scheduleList = new LinkedList<>();
-  static ArrayList<Seat> seatList = new ArrayList<>();
+  static List<Board> boardList ;
+  static List<Member> memberList ;
+  static List<Schedule> scheduleList ;
+  static List<Seat> seatList ;
 
+  static File boardFile = new File("boards.data");
+  static File memberFile = new File("members.data");
+  static File scheduleFile = new File("schedules.data");
+  static File seatFile = new File("seats.data");
   public static void main(String[] args) {
 
 
-    loadBoards();
-    loadMembers();
-    loadSchedules();
-    loadSeats();
+    boardList = loadObjects(boardFile, Board.class);
+    memberList = loadObjects(memberFile, Member.class);
+    scheduleList = loadObjects(scheduleFile, Schedule.class);
+    seatList = loadObjects(seatFile, Seat.class);
 
 
     HashMap<String,Command> commandMap = new HashMap<>();
@@ -122,203 +129,75 @@ public class App2 {
         System.out.println();
       }
 
-    saveBoards();
-    saveMembers();
-    saveSchedules();
-    saveSeats();
+    saveObjects(boardFile, boardList);
+    saveObjects(memberFile, memberList);
+    saveObjects(scheduleFile, scheduleList);
+    saveObjects(seatFile, seatList);
 
     Prompt.close();
   }
 
-  static void loadBoards() {
-    try (DataInputStream in = new DataInputStream(new FileInputStream("boards.data"))){
+  static <T extends Serializable> List<T> loadObjects(File file, Class<T> dataType) {
+    try (ObjectInputStream in = new ObjectInputStream(
+        new BufferedInputStream(new FileInputStream(file)))){
 
-      int size = in.readInt;
+      System.out.printf("파일 %s 로딩!\n", file.getName());
+      return (List<T>) in.readObject();
 
-      for (int i = 0; i < size; i++ ) {
-        Board b = new Board();
-        b.setNo(in.readInt());
-        b.setName(in.readUTF());
-        b.setTitle(in.readUTF());
-        b.setContent(in.readUTF());
-        b.setMessage(in.readUTF());
-        b.setWriter(in.readUTF());
-        b.setRegisteredDate(Date.valueOf(in.readUTF()));
-        b.setViewCount(in.readInt());
-
-        boardList.add(b);
-      }
-      System.out.println("게시글 데이터 로딩!");
     }catch (Exception e) {
-      System.out.println("게시글 데이터 로딩 중 오류 발생!");
+      System.out.printf("파일 %s 로딩 중 오류 발생!\n", file.getName());
+      return new ArrayList<T>();
     }
   }
 
-  static void saveBoards() {
-    try (DataOutputStream out = new DataOutputStream(new FileOutputStream("boards.data"))){
+  static <T extends Serializable> void saveObjects(File file, List<?> dataList) {
+    try (ObjectOutputStream out = new ObjectOutputStream(
+        new BufferedOutputStream(new FileOutputStream(file)))){
 
-      out.writeInt(boardList.size());
-
-      for (Board b : boardList) {
-        out.writeInt(b.getNo());
-        out.writeUTF(b.getName());
-        out.writeUTF(b.getTitle());
-        out.writeUTF(b.getContent());
-        out.writeUTF(b.getMessage());
-        out.writeUTF(b.getWriter());
-        out.writeUTF(b.getRegisteredDate().toString());
-        out.writeInt(b.getViewCount());
-
-      }
-      System.out.println("게시글 데이터 저장!");
+      out.writeObject(dataList);
+      System.out.printf("파일 %s 저장!\n", file.getName());
     }catch(Exception e) {
-      System.out.println("게시글 데이터를 파일로 저장 중 오류 발생!");
+      System.out.printf("파일 %s 저장 중 오류 발생!\n", file.getName());
     }
   }
 
   static void loadMembers() {
-    try (DataInputStream in = new DataInputStream(new FileInputStream("members.data"))){
+    try (ObjectInputStream in = new ObjectInputStream(
+        new BufferedInputStream(new FileInputStream(memberFile)))){
 
-      int size = in.readInt();
-
-      for (int i = 0; i < size; i++ ) {
-        Member m = new Member();
-        m.setNo(in.readInt());
-        m.setName(in.readUTF());
-        m.setEmail(in.readUTF());
-        m.setPhoto(in.readUTF());
-        m.setHp(in.readUTF());
-        m.setRegisteredDate(Date.valueOf(in.readUTF()));
-
-        memberList.add(m);
-      }
+      memberList = (List<Member>) in.readObject();
       System.out.println("회원 데이터 로딩!");
+
     }catch (Exception e) {
       System.out.println("회원 데이터 로딩 중 오류 발생!");
     }
   }
 
-  static void saveMembers() {
-    try (DataOutputStream out = new DataOutputStream(new FileOutputStream("members.data"))){
-
-      out.writeInt(memberList.size());
-
-      for (Member m : memberList) {
-        out.writeInt(m.getNo());
-        out.writeUTF(m.getName());
-        out.writeUTF(m.getEmail());
-        out.writeUTF(m.getPhoto());
-        out.writeUTF(m.getHp());
-        out.writeUTF(m.getRegisteredDate().toString());
-      }
-      System.out.println("회원 데이터 저장!");
-    }catch(Exception e) {
-      System.out.println("회원 데이터를 파일로 저장 중 오류 발생!");
-    }
-  }
 
   static void loadSchedules() {
-    try (DataInputStream in = new DataInputStream(new FileInputStream("schedules.data"))){
+    try (ObjectInputStream in = new ObjectInputStream(
+        new BufferedInputStream(new FileInputStream(scheduleFile)))){
 
-      int size = in.readInt();
-
-      for (int i = 0; i < size; i++ ) {
-        Schedule s = new Schedule();
-        s.setNo(in.readInt());
-        s.setDestination(in.readUTF());
-        s.setAirno(in.readUTF());
-        s.setDestination(in.readUTF());
-        s.setName(in.readUTF());
-        s.setDtime(Time.valueOf(in.readUTF()));
-        s.setAtime(Time.valueOf(in.readUTF()));
-
-        scheduleList.add(s);
-      }
+      scheduleList = (List<Schedule>) in.readObject();
       System.out.println("스케쥴 데이터 로딩!");
     }catch (Exception e) {
       System.out.println("스케쥴 데이터 로딩 중 오류 발생!");
     }
   }
 
-  static void saveSchedules() {
-    try (DataOutputStream out = new DataOutputStream(new FileOutputStream("schedules.data"))){
-
-
-      out.writeInt(scheduleList.size());
-
-      for (Schedule s : scheduleList) {
-        out.writeInt(s.getNo());
-        out.writeUTF(s.getDestination());
-        out.writeUTF(s.getAirno());
-        out.writeUTF(s.getName());
-        out.writeUTF(s.getDtime().toString());
-        out.writeUTF(s.getAtime().toString());
-
-      }
-      System.out.println("스케쥴 데이터 저장!");
-    }catch(Exception e) {
-      System.out.println("스케쥴 데이터를 파일로 저장 중 오류 발생!");
-    }
-  }
 
   static void loadSeats() {
-    try (DataInputStream in = new DataInputStream(new FileInputStream("seats.data"))){
-      int size = in.readInt();
+    try (ObjectInputStream in = new ObjectInputStream(
+        new BufferedInputStream(new FileInputStream(seatFile)))){
 
-      for (int i = 0; i < size; i++ ) {
-        Seat t = new Seat();
-        t.setNo(in.readInt());
-        t.setMgrade(in.readUTF());
-        t.setSgrade(in.readInt());
-        t.setSno(in.readUTF());
-        t.setEtc(in.readUTF());
-
-        seatList.add(t);
-      }
+      seatList = (List<Seat>) in.readObject();
       System.out.println("좌석 데이터 로딩!");
+
     }catch (Exception e) {
       System.out.println("좌석 데이터 로딩 중 오류 발생!");
     }
   }
 
-  static void saveSeats() {
-    try (FileOutputStream out = new FileOutputStream("members.data")){
-
-      out.write(seatList.size() >> 8);
-      out.write(seatList.size());
-
-      for (Seat t : seatList) {
-        out.write(t.getNo() >> 24);
-        out.write(t.getNo() >> 16);
-        out.write(t.getNo() >> 8);
-        out.write(t.getNo());
-
-        byte[] buf = t.getMgrade().getBytes("UTF-8");
-        out.write(buf.length >> 8);
-        out.write(buf.length);
-        out.write(buf);
-
-        out.write(t.getSgrade() >> 24);
-        out.write(t.getSgrade() >> 16);
-        out.write(t.getSgrade() >> 8);
-        out.write(t.getSgrade());
-
-        buf = t.getSno().getBytes("UTF-8");
-        out.write(buf.length >> 8);
-        out.write(buf.length);
-        out.write(buf);
-
-        buf = t.getEtc().getBytes("UTF-8");
-        out.write(buf.length >> 8);
-        out.write(buf.length);
-        out.write(buf);
-
-      }
-      System.out.println("좌석 데이터 저장!");
-    }catch(Exception e) {
-      System.out.println("좌석 데이터를 파일로 저장 중 오류 발생!");
-    }
-  }
 
   static void printCommandHistory(Iterator<String> iterator) {
 

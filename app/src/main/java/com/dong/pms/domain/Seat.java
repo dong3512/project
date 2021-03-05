@@ -1,6 +1,10 @@
 package com.dong.pms.domain;
 
-public class Seat {
+import java.io.Serializable;
+
+public class Seat implements Serializable{
+  private static final long serialVersionUTD = 1L;
+
   private int no ;
   private String mgrade;
   private int sgrade ;

@@ -1,9 +1,6 @@
 package com.dong.pms.domain;
 
-import java.io.Serializable;
-
-public class Seat implements Serializable{
-  private static final long serialVersionUTD = 1L;
+public class Seat {
 
   private int no ;
   private String mgrade;
@@ -11,8 +8,25 @@ public class Seat implements Serializable{
   private String sno ;
   private String etc ;
 
+  public String toCsvString() {
+    return String.format("%d,%s,%d,%s,%s", 
+        this.getNo(),
+        this.getMgrade(),
+        this.getSgrade(),
+        this.getSno(),
+        this.getEtc());
+  }
 
-
+  public static Seat valueOfCsv(String csv) {
+    String[] fields = csv.split(",");
+    Seat t = new Seat();
+    t.setNo(Integer.parseInt(fields[0]));
+    t.setMgrade(fields[1]);
+    t.setSgrade(Integer.parseInt(fields[2]));
+    t.setSno(fields[3]);
+    t.setEtc(fields[4]);
+    return t;
+  }
 
   @Override
   public int hashCode() {

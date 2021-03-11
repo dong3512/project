@@ -1,10 +1,8 @@
 package com.dong.pms.domain;
 
-import java.io.Serializable;
 import java.sql.Date;
 
-public class Member implements Serializable{
-  private static final long serialVersionUTD = 1L;
+public class Member {
 
   private int no ;
   private String name ;
@@ -13,7 +11,27 @@ public class Member implements Serializable{
   private String hp ;
   private Date registeredDate ;
 
+  public String toCsvString() {
+    return String.format("%d,%s,%s,%s,%s,%s",
+        this.getNo(),
+        this.getName(),
+        this.getEmail(),
+        this.getPhoto(),
+        this.getHp(),
+        this.getRegisteredDate());
+  }
 
+  public static Member valueOfCsv(String csv) {
+    String[] fields = csv.split(",");
+    Member m = new Member();
+    m.setNo(Integer.parseInt(fields[0]));
+    m.setName(fields[1]);
+    m.setEmail(fields[2]);
+    m.setPhoto(fields[3]);
+    m.setHp(fields[4]);
+    m.setRegisteredDate(Date.valueOf(fields[5]));
+    return m;
+  }
 
   @Override
   public int hashCode() {

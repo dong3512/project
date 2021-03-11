@@ -1,10 +1,8 @@
 package com.dong.pms.domain;
 
-import java.io.Serializable;
 import java.sql.Time;
 
-public class Schedule implements Serializable{
-  private static final long serialVersionUTD = 1L;
+public class Schedule {
   private int no;
   private String destination ;
   private String airno ;
@@ -13,8 +11,29 @@ public class Schedule implements Serializable{
   private Time atime ;
   private String pilot;
 
+  public String toCsvString() {
+    return String.format("%d,%s,%s,%s,%s,%s,%s", 
+        this.getNo(),
+        this.getDestination(),
+        this.getAirno(),
+        this.getName(),
+        this.getDtime(),
+        this.getAtime(),
+        this.getPilot());
+  }
 
-
+  public static Schedule valueOfCsv(String csv) {
+    String[] fields = csv.split(",");
+    Schedule s = new Schedule();
+    s.setNo(Integer.parseInt(fields[0]));
+    s.setDestination(fields[1]);
+    s.setAirno(fields[2]);
+    s.setName(fields[3]);
+    s.setDtime(Time.valueOf(fields[4]));
+    s.setAtime(Time.valueOf(fields[5]));
+    s.setPilot(fields[6]);
+    return s;
+  }
 
   @Override
   public int hashCode() {

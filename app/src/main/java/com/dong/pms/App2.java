@@ -1,13 +1,10 @@
 package com.dong.pms;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +37,8 @@ import com.dong.pms.handler.SeatDeleteHandler;
 import com.dong.pms.handler.SeatDetailHandler;
 import com.dong.pms.handler.SeatListHandler;
 import com.dong.pms.handler.SeatUpdateHandler;
+import com.dong.util.CsvObject;
+import com.dong.util.ObjectFactory;
 import com.dong.util.Prompt;
 
 public class App2 {
@@ -47,22 +46,23 @@ public class App2 {
   static ArrayDeque<String> commandStack = new ArrayDeque<>();
   static LinkedList<String> commandQueue = new LinkedList<>();
 
-  static List<Board> boardList ;
-  static List<Member> memberList ;
-  static List<Schedule> scheduleList ;
-  static List<Seat> seatList ;
+  static ArrayList<Board> boardList = new ArrayList<>();
+  static ArrayList<Member> memberList = new ArrayList<>();
+  static LinkedList<Schedule> scheduleList = new LinkedList<>();
+  static LinkedList<Seat> seatList = new LinkedList<>();
 
-  static File boardFile = new File("boards.data");
-  static File memberFile = new File("members.data");
-  static File scheduleFile = new File("schedules.data");
-  static File seatFile = new File("seats.data");
+  static File boardFile = new File("boards.csv");
+  static File memberFile = new File("members.csv");
+  static File scheduleFile = new File("schedules.csv");
+  static File seatFile = new File("seats.csv");
+
   public static void main(String[] args) {
 
 
-    boardList = loadObjects(boardFile, Board.class);
-    memberList = loadObjects(memberFile, Member.class);
-    scheduleList = loadObjects(scheduleFile, Schedule.class);
-    seatList = loadObjects(seatFile, Seat.class);
+    loadObjects(boardFile, boardList, Board::new);
+    loadObjects(memberFile, memberList, Member::new);
+    loadObjects(scheduleFile, scheduleList, Schedule::new);
+    loadObjects(seatFile, seatList, Seat::new);
 
 
     HashMap<String,Command> commandMap = new HashMap<>();
@@ -98,7 +98,7 @@ public class App2 {
 
     loop:
       while(true) {
-        String command = Prompt.inputString("명령> ");
+        String command = com.dong.util.Prompt.inputString("명령> ");
 
         if (command.length() == 0)
           continue;
@@ -118,7 +118,13 @@ public class App2 {
               System.out.println("사용해주셔서 감사합니다.");
               break loop;
             default:
-              System.out.println("실행할 수 없는 명령입니다.");
+              Command commandHandler = commandMap.get(command);
+
+              if (commandHandler == null) {
+                System.out.println("실행할 수 없는 명령입니다.");
+              } else {
+                commandHandler.service();
+              }
           }
         } catch (Exception e) {
           System.out.println("------------------------------------------");
@@ -137,64 +143,27 @@ public class App2 {
     Prompt.close();
   }
 
-  static <T extends Serializable> List<T> loadObjects(File file, Class<T> dataType) {
-    try (ObjectInputStream in = new ObjectInputStream(
-        new BufferedInputStream(new FileInputStream(file)))){
-
-      System.out.printf("파일 %s 로딩!\n", file.getName());
-      return (List<T>) in.readObject();
+  static <T> void loadObjects(File file, List<T> list, ObjectFactory<T> objFactory) {
+    try (BufferedReader in = new BufferedReader(new FileReader(file))){
+      String csvStr = null;
+      while ((csvStr = in.readLine()) != null) {
+        list.add(objFactory.create(csvStr));
+      }
+      System.out.printf("파일 %s 데이터 로딩!\n", file.getName());
 
     }catch (Exception e) {
-      System.out.printf("파일 %s 로딩 중 오류 발생!\n", file.getName());
-      return new ArrayList<T>();
+      System.out.printf(" %s 파일 데이터 로딩 중 오류 발생!\n", file.getName());
     }
   }
 
-  static <T extends Serializable> void saveObjects(File file, List<?> dataList) {
-    try (ObjectOutputStream out = new ObjectOutputStream(
-        new BufferedOutputStream(new FileOutputStream(file)))){
-
-      out.writeObject(dataList);
+  static <T extends CsvObject> void saveObjects(File file, List<T> list) {
+    try (BufferedWriter out = new BufferedWriter(new FileWriter(file))){
+      for (CsvObject csvObj : list) {
+        out.write(csvObj.toCsvString() + "\n");
+      }
       System.out.printf("파일 %s 저장!\n", file.getName());
     }catch(Exception e) {
       System.out.printf("파일 %s 저장 중 오류 발생!\n", file.getName());
-    }
-  }
-
-  static void loadMembers() {
-    try (ObjectInputStream in = new ObjectInputStream(
-        new BufferedInputStream(new FileInputStream(memberFile)))){
-
-      memberList = (List<Member>) in.readObject();
-      System.out.println("회원 데이터 로딩!");
-
-    }catch (Exception e) {
-      System.out.println("회원 데이터 로딩 중 오류 발생!");
-    }
-  }
-
-
-  static void loadSchedules() {
-    try (ObjectInputStream in = new ObjectInputStream(
-        new BufferedInputStream(new FileInputStream(scheduleFile)))){
-
-      scheduleList = (List<Schedule>) in.readObject();
-      System.out.println("스케쥴 데이터 로딩!");
-    }catch (Exception e) {
-      System.out.println("스케쥴 데이터 로딩 중 오류 발생!");
-    }
-  }
-
-
-  static void loadSeats() {
-    try (ObjectInputStream in = new ObjectInputStream(
-        new BufferedInputStream(new FileInputStream(seatFile)))){
-
-      seatList = (List<Seat>) in.readObject();
-      System.out.println("좌석 데이터 로딩!");
-
-    }catch (Exception e) {
-      System.out.println("좌석 데이터 로딩 중 오류 발생!");
     }
   }
 

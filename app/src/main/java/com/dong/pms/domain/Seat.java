@@ -1,6 +1,8 @@
 package com.dong.pms.domain;
 
-public class Seat {
+import com.dong.util.CsvObject;
+
+public class Seat implements CsvObject{
 
   private int no ;
   private String mgrade;
@@ -8,6 +10,17 @@ public class Seat {
   private String sno ;
   private String etc ;
 
+  public Seat() {}
+
+  public Seat(String csv) {
+    String[] fields = csv.split(",");
+    this.setNo(Integer.parseInt(fields[0]));
+    this.setMgrade(fields[1]);
+    this.setSgrade(Integer.parseInt(fields[2]));
+    this.setSno(fields[3]);
+    this.setEtc(fields[4]);
+  }
+  @Override
   public String toCsvString() {
     return String.format("%d,%s,%d,%s,%s", 
         this.getNo(),

@@ -1,8 +1,9 @@
 package com.dong.pms.domain;
 
 import java.sql.Time;
+import com.dong.util.CsvObject;
 
-public class Schedule {
+public class Schedule implements CsvObject{
   private int no;
   private String destination ;
   private String airno ;
@@ -11,6 +12,20 @@ public class Schedule {
   private Time atime ;
   private String pilot;
 
+  public Schedule() {}
+
+  public Schedule(String csv) {
+    String[] fields = csv.split(",");
+    this.setNo(Integer.parseInt(fields[0]));
+    this.setDestination(fields[1]);
+    this.setAirno(fields[2]);
+    this.setName(fields[3].replace("|", ","));
+    this.setDtime(Time.valueOf(fields[4]));
+    this.setAtime(Time.valueOf(fields[5]));
+    this.setPilot(fields[6]);
+  }
+
+  @Override
   public String toCsvString() {
     return String.format("%d,%s,%s,%s,%s,%s,%s", 
         this.getNo(),

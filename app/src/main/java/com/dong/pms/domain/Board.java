@@ -1,8 +1,9 @@
 package com.dong.pms.domain;
 
 import java.sql.Date;
+import com.dong.util.CsvObject;
 
-public class Board {
+public class Board implements CsvObject{
 
   private int no;
   private String name;
@@ -13,6 +14,21 @@ public class Board {
   private Date registeredDate;
   private int viewCount;
 
+  public Board() {}
+
+  public Board(String csv) {
+    String[] fields = csv.split(",");
+    this.setNo(Integer.parseInt(fields[0]));
+    this.setName(fields[1]);
+    this.setTitle(fields[2]);
+    this.setContent(fields[3]);
+    this.setMessage(fields[4]);
+    this.setWriter(fields[5]);
+    this.setRegisteredDate(Date.valueOf(fields[6]));
+    this.setViewCount(Integer.parseInt(fields[7]));
+
+  }
+  @Override
   public String toCsvString() {
     return String.format("%d,%s,%s,%s,%s,%s,%S,%d",
         this.getNo(),

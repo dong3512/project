@@ -1,7 +1,9 @@
 package com.dong.context;
 
-public interface ApplicationContextListener {
-  void contextInitialized();
+import java.util.Map;
 
-  void contextDestroyed();
+public interface ApplicationContextListener {
+  void contextInitialized(Map<String,Object> context);
+
+  void contextDestroyed(Map<String,Object> context);
 }

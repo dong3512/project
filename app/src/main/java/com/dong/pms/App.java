@@ -1,18 +1,12 @@
 package com.dong.pms;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.lang.reflect.Type;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import com.dong.context.ApplicationContextListener;
 import com.dong.pms.domain.Board;
 import com.dong.pms.domain.Member;
@@ -41,10 +35,8 @@ import com.dong.pms.handler.SeatDetailHandler;
 import com.dong.pms.handler.SeatListHandler;
 import com.dong.pms.handler.SeatUpdateHandler;
 import com.dong.pms.listener.AppListener;
-import com.dong.util.CsvObject;
+import com.dong.pms.listener.FileListener;
 import com.dong.util.Prompt;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 public class App {
 
@@ -53,19 +45,14 @@ public class App {
   ArrayDeque<String> commandStack = new ArrayDeque<>();
   LinkedList<String> commandQueue = new LinkedList<>();
 
-  ArrayList<Board> boardList = new ArrayList<>();
-  ArrayList<Member> memberList = new ArrayList<>();
-  LinkedList<Schedule> scheduleList = new LinkedList<>();
-  LinkedList<Seat> seatList = new LinkedList<>();
-
-  File boardFile = new File("boards.json");
-  File memberFile = new File("members.json");
-  File scheduleFile = new File("schedules.json");
-  File seatFile = new File("seats.json");
+  Map<String,Object> appContext = new HashMap<>();
 
   public static void main(String[] args) {
     App app = new App();
+
     app.addApplicationContextListener(new AppListener());
+    app.addApplicationContextListener(new FileListener());
+
     app.service();
   }
 
@@ -77,14 +64,16 @@ public class App {
     listeners.remove(listener);
   }
 
+
+  @SuppressWarnings("unchecked")
   public void service() {
 
     notifyOnServiceStarted();
 
-    loadObjects(boardFile, boardList, Board.class);
-    loadObjects(memberFile, memberList, Member.class);
-    loadObjects(scheduleFile, scheduleList, Schedule.class);
-    loadObjects(seatFile, seatList, Seat.class);
+    List<Board> boardList = (List<Board>) appContext.get("boardList");
+    List<Member> memberList = (List<Member>) appContext.get("memberList");
+    List<Schedule> scheduleList = (List<Schedule>) appContext.get("scheduleList");
+    List<Seat> seatList = (List<Seat>) appContext.get("seatList");
 
 
     HashMap<String,Command> commandMap = new HashMap<>();
@@ -156,11 +145,6 @@ public class App {
         System.out.println();
       }
 
-    saveObjects(boardFile, boardList);
-    saveObjects(memberFile, memberList);
-    saveObjects(scheduleFile, scheduleList);
-    saveObjects(seatFile, seatList);
-
     Prompt.close();
 
     notifyOnServiceStopped();
@@ -168,47 +152,15 @@ public class App {
 
   private void notifyOnServiceStarted() {
     for (ApplicationContextListener listener : listeners) {
-      listener.contextInitialized();
+      listener.contextInitialized(appContext);
     }
   }
 
   private void notifyOnServiceStopped() {
     for (ApplicationContextListener listener : listeners) {
-      listener.contextDestroyed();
+      listener.contextDestroyed(appContext);
     }
   }
-
-  private <T> void loadObjects(File file, List<T> list, Class<T> elementType) {
-    try (BufferedReader in = new BufferedReader(new FileReader(file))){
-      StringBuilder strBuilder = new StringBuilder();
-      String str = null;
-      while ((str = in.readLine()) != null) {
-        strBuilder.append(str);
-      }
-
-      Type collectionType = TypeToken.getParameterized(Collection.class, elementType).getType();
-
-      Collection<T> collection = new Gson().fromJson(strBuilder.toString(), collectionType);
-
-      list.addAll(collection);
-
-      System.out.printf("파일 %s 데이터 로딩!\n", file.getName());
-
-    }catch (Exception e) {
-      System.out.printf(" %s 파일 데이터 로딩 중 오류 발생!\n", file.getName());
-    }
-  }
-
-  private <T extends CsvObject> void saveObjects(File file, List<T> list) {
-    try (BufferedWriter out = new BufferedWriter(new FileWriter(file))){
-      out.write(new Gson().toJson(list));
-      System.out.printf("파일 %s 저장!\n", file.getName());
-
-    }catch(Exception e) {
-      System.out.printf("파일 %s 저장 중 오류 발생!\n", file.getName());
-    }
-  }
-
 
   static void printCommandHistory(Iterator<String> iterator) {
 
